@@ -25,7 +25,7 @@ function publicClient() {
 /** Signed URLs are minted against the server URL; rewrite them to the browser-facing URL. */
 function toPublicUrl(signed: string): string {
   const serverUrl = process.env["SUPABASE_URL"]?.replace(/\/+$/, "");
-  const publicUrl = (import.meta.env.VITE_SUPABASE_URL ?? "").replace(/\/+$/, "");
+  const publicUrl = (import.meta.env["VITE_SUPABASE_URL"] ?? "").replace(/\/+$/, "");
   if (serverUrl && publicUrl && signed.startsWith(serverUrl)) return publicUrl + signed.slice(serverUrl.length);
   return signed;
 }
