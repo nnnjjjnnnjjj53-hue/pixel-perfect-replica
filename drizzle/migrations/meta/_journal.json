@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1795198149815,
+      "tag": "0000_adasa_core_schema",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1795198684210,
+      "tag": "0001_restrict_tryon_photo_reads",
+      "breakpoints": true
+    }
+  ]
+}
