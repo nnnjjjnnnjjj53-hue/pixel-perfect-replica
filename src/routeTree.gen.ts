@@ -10,33 +10,136 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SSlugRouteImport } from './routes/s.$slug'
+import { Route as TShareIdRouteImport } from './routes/t.$shareId'
+import { Route as SSlugIndexRouteImport } from './routes/s.$slug.index'
+import { Route as SSlugTryOnRouteImport } from './routes/s.$slug.try-on'
+import { Route as SSlugFFrameIdRouteImport } from './routes/s.$slug.f.$frameId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SSlugRoute = SSlugRouteImport.update({
+  id: '/s/$slug',
+  path: '/s/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TShareIdRoute = TShareIdRouteImport.update({
+  id: '/t/$shareId',
+  path: '/t/$shareId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SSlugIndexRoute = SSlugIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SSlugRoute,
+} as any)
+const SSlugTryOnRoute = SSlugTryOnRouteImport.update({
+  id: '/try-on',
+  path: '/try-on',
+  getParentRoute: () => SSlugRoute,
+} as any)
+const SSlugFFrameIdRoute = SSlugFFrameIdRouteImport.update({
+  id: '/f/$frameId',
+  path: '/f/$frameId',
+  getParentRoute: () => SSlugRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/dashboard': typeof DashboardRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/s/$slug': typeof SSlugRouteWithChildren
+  '/t/$shareId': typeof TShareIdRoute
+  '/s/$slug/try-on': typeof SSlugTryOnRoute
+  '/s/$slug/': typeof SSlugIndexRoute
+  '/s/$slug/f/$frameId': typeof SSlugFFrameIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/dashboard': typeof DashboardRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/t/$shareId': typeof TShareIdRoute
+  '/s/$slug/try-on': typeof SSlugTryOnRoute
+  '/s/$slug': typeof SSlugIndexRoute
+  '/s/$slug/f/$frameId': typeof SSlugFFrameIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/dashboard': typeof DashboardRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/s/$slug': typeof SSlugRouteWithChildren
+  '/t/$shareId': typeof TShareIdRoute
+  '/s/$slug/try-on': typeof SSlugTryOnRoute
+  '/s/$slug/': typeof SSlugIndexRoute
+  '/s/$slug/f/$frameId': typeof SSlugFFrameIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/reset-password'
+    | '/s/$slug'
+    | '/t/$shareId'
+    | '/s/$slug/try-on'
+    | '/s/$slug/'
+    | '/s/$slug/f/$frameId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/reset-password'
+    | '/t/$shareId'
+    | '/s/$slug/try-on'
+    | '/s/$slug'
+    | '/s/$slug/f/$frameId'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/reset-password'
+    | '/s/$slug'
+    | '/t/$shareId'
+    | '/s/$slug/try-on'
+    | '/s/$slug/'
+    | '/s/$slug/f/$frameId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
+  DashboardRoute: typeof DashboardRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  SSlugRoute: typeof SSlugRouteWithChildren
+  TShareIdRoute: typeof TShareIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +151,86 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/s/$slug': {
+      id: '/s/$slug'
+      path: '/s/$slug'
+      fullPath: '/s/$slug'
+      preLoaderRoute: typeof SSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/t/$shareId': {
+      id: '/t/$shareId'
+      path: '/t/$shareId'
+      fullPath: '/t/$shareId'
+      preLoaderRoute: typeof TShareIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/s/$slug/': {
+      id: '/s/$slug/'
+      path: '/'
+      fullPath: '/s/$slug/'
+      preLoaderRoute: typeof SSlugIndexRouteImport
+      parentRoute: typeof SSlugRoute
+    }
+    '/s/$slug/try-on': {
+      id: '/s/$slug/try-on'
+      path: '/try-on'
+      fullPath: '/s/$slug/try-on'
+      preLoaderRoute: typeof SSlugTryOnRouteImport
+      parentRoute: typeof SSlugRoute
+    }
+    '/s/$slug/f/$frameId': {
+      id: '/s/$slug/f/$frameId'
+      path: '/f/$frameId'
+      fullPath: '/s/$slug/f/$frameId'
+      preLoaderRoute: typeof SSlugFFrameIdRouteImport
+      parentRoute: typeof SSlugRoute
+    }
   }
 }
 
+interface SSlugRouteChildren {
+  SSlugTryOnRoute: typeof SSlugTryOnRoute
+  SSlugIndexRoute: typeof SSlugIndexRoute
+  SSlugFFrameIdRoute: typeof SSlugFFrameIdRoute
+}
+
+const SSlugRouteChildren: SSlugRouteChildren = {
+  SSlugTryOnRoute: SSlugTryOnRoute,
+  SSlugIndexRoute: SSlugIndexRoute,
+  SSlugFFrameIdRoute: SSlugFFrameIdRoute,
+}
+
+const SSlugRouteWithChildren = SSlugRoute._addFileChildren(SSlugRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
+  DashboardRoute: DashboardRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  SSlugRoute: SSlugRouteWithChildren,
+  TShareIdRoute: TShareIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
