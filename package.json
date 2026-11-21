@@ -4,14 +4,14 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "dev": "vite dev",
-    "build": "vite build",
-    "build:dev": "vite build --mode development",
-    "preview": "vite preview",
-    "lint": "eslint .",
-    "format": "prettier --write .",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "dev": "bun x vite dev",
+    "build": "bun x vite build",
+    "build:dev": "bun x vite build --mode development",
+    "preview": "bun x vite preview",
+    "lint": "bun x eslint .",
+    "format": "bun x prettier --write .",
+    "test": "bun x vitest run",
+    "test:watch": "bun x vitest"
   },
   "overrides": {
     "rolldown": "1.2.1",
