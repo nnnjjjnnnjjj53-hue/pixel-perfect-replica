@@ -6,7 +6,10 @@ import { TryOnViewer } from "@/components/tryon/TryOnViewer";
 
 export const Route = createFileRoute("/s/$slug/try-on")({
   ssr: false,
-  validateSearch: (search: Record<string, unknown>) => ({ frame: typeof search.frame === "string" ? search.frame : undefined }),
+  validateSearch: (search: Record<string, unknown>): { frame?: string } => {
+    const frame = search["frame"];
+    return typeof frame === "string" ? { frame } : {};
+  },
   loader: async ({ context, params }) => {
     const data = await context.queryClient.ensureQueryData(storefrontQuery(params.slug));
     if (!data) throw notFound();
@@ -38,7 +41,7 @@ function TryOnPage() {
       <h1 className="mt-3 text-2xl sm:text-3xl">جرّب النظارات بالكاميرا</h1>
       <p className="mt-1 text-sm text-muted-foreground">البس النظارة افتراضياً، وحلّل شكل وجهك للحصول على توصيات.</p>
       <div className="mt-6 rounded-3xl border bg-background p-4 sm:p-6" style={brandVars(store.brand_color)}>
-        <TryOnViewer storeId={store.id} frames={frames} initialFrameId={search.frame} />
+        <TryOnViewer storeId={store.id} frames={frames} {...(search.frame ? { initialFrameId: search.frame } : {})} />
       </div>
     </main>
   );

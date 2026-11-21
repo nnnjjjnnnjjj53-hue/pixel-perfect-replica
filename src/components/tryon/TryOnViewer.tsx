@@ -31,12 +31,12 @@ export function TryOnViewer({
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const detectorRef = useRef<Awaited<ReturnType<typeof import("@mediapipe/tasks-vision").FaceLandmarker.createFromOptions>> | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  const samplesRef = useRef<{ measures: ReturnType<typeof measuresFromLandmarks>[]; skins: [number, number, number][] }>({ measures: [], skins: [] });
+  const samplesRef = useRef<{ measures: NonNullable<ReturnType<typeof measuresFromLandmarks>>[]; skins: [number, number, number][] }>({ measures: [], skins: [] });
 
   const [phase, setPhase] = useState<Phase>("idle");
   const [error, setError] = useState<string | null>(null);
-  const [activeFrame, setActiveFrame] = useState<Frame>(
-    () => frames.find((f) => f.id === initialFrameId) ?? frames[0] ?? frames[0],
+  const [activeFrame, setActiveFrame] = useState<Frame | undefined>(
+    () => frames.find((f) => f.id === initialFrameId) ?? frames[0],
   );
   const [faceResult, setFaceResult] = useState<SavedFace | null>(null);
   const [showOverlay, setShowOverlay] = useState(true);
@@ -181,7 +181,7 @@ export function TryOnViewer({
       const detector = await vision.FaceLandmarker.createFromOptions(fileset, {
         baseOptions: {
           modelAssetPath:
-            "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.2.3/face_landmarker_v2_with_blendshapes.task",
+            "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",
           delegate: "GPU",
         },
         runningMode: "VIDEO",
