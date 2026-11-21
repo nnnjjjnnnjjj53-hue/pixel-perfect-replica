@@ -28,3 +28,5 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+- Camera try-on renders with a THREE.OrthographicCamera in video-pixel space and a canvas buffer sized to the video (CSS size untouched, same object-cover as the video) — keeps landmarks and glasses aligned on any aspect ratio.
