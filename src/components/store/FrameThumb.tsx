@@ -4,7 +4,11 @@ import { cn } from "@/lib/utils";
 
 export function FrameThumb({ frame, className, artClassName }: { frame: Frame; className?: string; artClassName?: string }) {
   if (frame.image_url) {
-    return <img src={frame.image_url} alt={frame.name} loading="lazy" className={cn("h-full w-full object-cover", className)} />;
+    return (
+      <div className={cn("flex h-full w-full items-center justify-center p-[8%]", className)}>
+        <img src={frame.image_url} alt={frame.name} loading="lazy" className={cn("max-h-full w-full object-contain drop-shadow-md", artClassName)} />
+      </div>
+    );
   }
   return (
     <div className={cn("flex h-full w-full items-center justify-center", className)}>

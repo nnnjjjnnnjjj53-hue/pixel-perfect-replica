@@ -86,7 +86,7 @@ function SharePage() {
             {share.frame && (
               <div className="mt-4 flex items-center gap-4">
                 <div className="h-16 w-20 shrink-0 overflow-hidden rounded-xl bg-muted">
-                  <FrameThumb frame={{ ...share.frame, store_id: "", sku: share.frame.sku, description: "", category: "unisex", material: "acetate", frame_color: share.frame.frame_color, lens_tint: share.frame.lens_tint, image_path: null, model_path: null, suits_face_shapes: [], is_active: true, price: share.frame.price } as Frame} className="object-cover" />
+                  <FrameThumb frame={{ ...share.frame, store_id: "", sku: share.frame.sku, description: "", category: "unisex", material: "acetate", frame_color: share.frame.frame_color, lens_tint: share.frame.lens_tint, image_path: null, model_path: null, suits_face_shapes: [], is_active: true, price: share.frame.price } as Frame} />
                 </div>
                 <div className="min-w-0">
                   <p className="font-medium">{share.frame.name}</p>

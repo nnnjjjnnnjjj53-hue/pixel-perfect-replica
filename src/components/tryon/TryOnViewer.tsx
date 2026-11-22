@@ -5,7 +5,7 @@ import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment
 import type { FaceLandmarker, NormalizedLandmark } from "@mediapipe/tasks-vision";
 import type { Frame } from "@/lib/eyewear";
 import { FACE_SHAPE_LABELS } from "@/lib/eyewear";
-import { buildGlasses, disposeGroup, MODEL_WIDTH } from "@/components/tryon/glasses3d";
+import { buildGlasses, buildPhotoGlasses, disposeGlasses, MODEL_WIDTH } from "@/components/tryon/glasses3d";
 import { poseFromLandmarks, measuresFromLandmarks, medianMeasures, sampleSkin } from "@/components/tryon/face-tracking";
 import { classifyFaceShape, classifySkinTone, UNDERTONE_LABELS, DEPTH_LABELS } from "@/lib/face-analysis";
 import { saveFace, logEvent, type SavedFace } from "@/lib/storefront";
@@ -20,6 +20,8 @@ const MODEL_URL =
 /** Warn in the console after this long without a detected face. */
 const NO_FACE_WARN_MS = 2500;
 const LOG = "[Adasa TryOn]";
+/** 0..1 — how fast the glasses follow the face each frame (lower = steadier). */
+const SMOOTHING = 0.55;
 
 interface DebugStats {
   delegate: "GPU" | "CPU" | "—";
@@ -100,29 +102,40 @@ export function TryOnViewer({
     if (typeof window !== "undefined" && new URLSearchParams(window.location.search).has("debug")) setShowDebug(true);
   }, []);
 
-  /** Swap the glasses mesh in the scene. */
-  const mountGlasses = useCallback((frame: Frame | undefined) => {
+  /** Swap the glasses in the scene: real product photo when available, 3D model otherwise. */
+  const mountTokenRef = useRef(0);
+  const mountGlasses = useCallback(async (frame: Frame | undefined) => {
     const scene = sceneRef.current;
     if (!scene) return;
+    const token = ++mountTokenRef.current;
+    let group: THREE.Group | null = null;
+    if (frame?.image_url) {
+      try {
+        group = await buildPhotoGlasses(frame.image_url);
+      } catch (e) {
+        console.warn(LOG, "product photo failed to load, using 3D model instead:", e);
+      }
+    }
+    if (!group && frame) {
+      group = buildGlasses({ shape: frame.shape, material: frame.material, color: frame.frame_color, tint: frame.lens_tint });
+    }
+    if (token !== mountTokenRef.current) {
+      if (group) disposeGlasses(group);
+      return; // a newer frame was picked while this one loaded
+    }
     if (glassesRef.current) {
       scene.remove(glassesRef.current);
-      disposeGroup(glassesRef.current);
+      disposeGlasses(glassesRef.current);
       glassesRef.current = null;
     }
-    if (!frame) return;
-    const group = buildGlasses({
-      shape: frame.shape,
-      material: frame.material,
-      color: frame.frame_color,
-      tint: frame.lens_tint,
-    });
+    if (!group) return;
     group.visible = false;
     glassesRef.current = group;
     scene.add(group);
   }, []);
 
   useEffect(() => {
-    mountGlasses(activeFrame);
+    void mountGlasses(activeFrame);
   }, [activeFrame, mountGlasses]);
 
   /**
@@ -211,9 +224,12 @@ export function TryOnViewer({
         }
         const pose = poseFromLandmarks(lms, w, h);
         if (glasses && pose) {
-          glasses.position.copy(pose.position);
-          glasses.quaternion.copy(pose.quaternion);
-          glasses.scale.setScalar(pose.faceWidth / MODEL_WIDTH);
+          // Smooth landmark jitter; snap when the face (re)appears.
+          const k = glasses.visible ? SMOOTHING : 1;
+          glasses.position.lerp(pose.position, k);
+          glasses.quaternion.slerp(pose.quaternion, k);
+          const target = pose.faceWidth / MODEL_WIDTH;
+          glasses.scale.setScalar(glasses.scale.x + (target - glasses.scale.x) * k);
           glasses.visible = showOverlayRef.current;
         } else if (glasses) {
           glasses.visible = false;
@@ -305,7 +321,7 @@ export function TryOnViewer({
       trackRef.current.sizeW = 0;
       trackRef.current.sizeH = 0;
       syncSize(video.videoWidth || 1280, video.videoHeight || 720);
-      mountGlasses(activeFrame);
+      await mountGlasses(activeFrame);
 
       if (!detectorRef.current) {
         const { detector, delegate } = await createDetector();
@@ -474,7 +490,11 @@ export function TryOnViewer({
                   activeFrame?.id === f.id ? "border-brand ring-1 ring-brand" : "hover:bg-muted",
                 )}
               >
-                <span className="h-8 w-8 shrink-0 rounded-lg border" style={{ backgroundColor: f.frame_color }} />
+                {f.image_url ? (
+                  <img src={f.image_url} alt="" loading="lazy" className="h-8 w-12 shrink-0 object-contain" />
+                ) : (
+                  <span className="h-8 w-8 shrink-0 rounded-lg border" style={{ backgroundColor: f.frame_color }} />
+                )}
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-xs font-medium">{f.name}</span>
                   <span className="block truncate text-[10px] text-muted-foreground">{f.shape}</span>

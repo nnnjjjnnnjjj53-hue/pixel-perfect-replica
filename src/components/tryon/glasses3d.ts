@@ -142,3 +142,45 @@ export function disposeGroup(group: THREE.Object3D) {
     else mat?.dispose();
   });
 }
+
+/**
+ * Realistic glasses from a front-view product photo (transparent PNG cut-out).
+ * The photo spans the full frame front, so it is sized to MODEL_WIDTH and
+ * follows the same face pose as the procedural model.
+ */
+export async function buildPhotoGlasses(url: string): Promise<THREE.Group> {
+  const loader = new THREE.TextureLoader();
+  loader.setCrossOrigin("anonymous");
+  const tex = await loader.loadAsync(url);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = 4;
+  const img = tex.image as { width: number; height: number };
+  const aspect = img.width / img.height || 3;
+  const width = MODEL_WIDTH;
+  const height = width / aspect;
+  const mat = new THREE.MeshBasicMaterial({
+    map: tex,
+    transparent: true,
+    depthWrite: false,
+    side: THREE.DoubleSide,
+    toneMapped: false, // keep the product photo's real colours
+  });
+  const plane = new THREE.Mesh(new THREE.PlaneGeometry(width, height), mat);
+  // Lens centres sit a little above the photo's vertical middle on most frames.
+  plane.position.y = -height * PHOTO_EYE_LINE_OFFSET;
+  const group = new THREE.Group();
+  group.add(plane);
+  group.userData["photo"] = true;
+  return group;
+}
+
+/** Fraction of the photo height the eye line sits above the photo centre. */
+export const PHOTO_EYE_LINE_OFFSET = 0.04;
+
+export function disposeGlasses(group: THREE.Object3D) {
+  group.traverse((o) => {
+    const mat = (o as THREE.Mesh).material as THREE.MeshBasicMaterial | undefined;
+    mat?.map?.dispose();
+  });
+  disposeGroup(group);
+}
