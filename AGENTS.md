@@ -30,3 +30,5 @@ use the editor.
 <!-- LOVABLE:END -->
 
 - Camera try-on renders with a THREE.OrthographicCamera in video-pixel space and a canvas buffer sized to the video (CSS size untouched, same object-cover as the video) — keeps landmarks and glasses aligned on any aspect ratio.
+- Try-on draws a frame's front-view transparent PNG (frames.image_path) as a textured plane on the face pose; the procedural 3D model is only a fallback when no photo exists — single-photo-to-3D looks cartoonish and is unreliable.
+- Router uses setupRouterSsrQueryIntegration so loader data (incl. per-request signed image URLs) is reused on hydration instead of refetched.

@@ -4,7 +4,8 @@
 - [ ] Design system (Arabic RTL, luxury look)
 - [ ] Landing page with plans
 - [ ] Storefront catalog with filters (/s/$slug)
-- [ ] 3D virtual try-on with face tracking, face shape + skin tone, match score & reasons
+- [x] Virtual try-on with face tracking, realistic photo-based glasses, face shape + skin tone
+- [ ] Owner frame upload with automatic background removal + fit sliders (part of owner dashboard)
 - [ ] Share link page with votes & comments, downloadable front/side image
 - [ ] Lens configurator + prescription upload + WhatsApp message
 - [ ] Auth (email, Google, Lovable)
